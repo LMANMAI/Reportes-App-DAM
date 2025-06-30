@@ -1,6 +1,9 @@
+import { Redirect } from "expo-router";
 import React from "react";
-import StackNavigator from "../navigation/StackNavigator";
 
-export default function App() {
-  return <StackNavigator />;
-}
+const App = () => {
+  console.log("desde el index");
+  return <Redirect href={"/(stack)/auth"} />;
+};
+
+export default App;
