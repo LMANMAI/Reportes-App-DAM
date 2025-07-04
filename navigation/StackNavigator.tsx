@@ -5,6 +5,7 @@ import { AuthScreen, HomeScreen } from "../containers";
 const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
+  console.log("desde el navigatiton");
   return (
     <Stack.Navigator>
       <Stack.Screen

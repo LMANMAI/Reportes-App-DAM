@@ -2,7 +2,6 @@ import { Redirect } from "expo-router";
 import React from "react";
 
 const App = () => {
-  console.log("desde el index");
   return <Redirect href={"/(stack)/auth"} />;
 };
 
