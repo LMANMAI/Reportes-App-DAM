@@ -1,3 +1,4 @@
+import ChangeImg from "@/components/ChangeImg";
 import { useAuth } from "@/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
@@ -31,6 +32,7 @@ const PerfilScreen = () => {
       </View>
 
       <View>
+        <ChangeImg />
         <Pressable
           onPress={() => {}}
           style={{
