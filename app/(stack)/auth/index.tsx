@@ -127,7 +127,14 @@ const AuthScreen = () => {
         </View>
       </View>
 
-      <Text style={{ marginVertical: 10, fontWeight: "bold", fontSize: 24 }}>
+      <Text
+        style={{
+          marginVertical: 10,
+          fontWeight: "bold",
+          fontSize: 24,
+          paddingTop: 140,
+        }}
+      >
         Iniciar sesión
       </Text>
       <View style={styles.container}>

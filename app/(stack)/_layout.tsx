@@ -4,16 +4,8 @@ import React from "react";
 const _layout = () => {
   return (
     <Stack>
-      <Stack.Screen
-        name="auth/index"
-        //component={AuthScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="home/index"
-        // component={HomeScreen}
-        options={{ headerShadowVisible: false }}
-      />
+      <Stack.Screen name="auth/index" options={{ headerShown: false }} />
+
       <Stack.Screen
         name="negocio/[id]"
         options={{

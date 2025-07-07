@@ -1,12 +1,19 @@
 import { router } from "expo-router";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import React from "react";
-import { ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import CardComponent from "../../../components/CardComponent";
 import { app } from "../../../config/config";
 
 const HomeScreen = () => {
   const [negocios, setNegocios] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const fetchNegocios = async () => {
@@ -21,6 +28,7 @@ const HomeScreen = () => {
         }));
 
         setNegocios(data);
+        setLoading(false);
       } catch (error) {
         console.error("Error al obtener los negocios:", error);
       }
@@ -28,6 +36,16 @@ const HomeScreen = () => {
 
     fetchNegocios();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <Text>Obteniendo negocios.</Text>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ padding: 16 }}>
       {negocios.map((negocio) => (
@@ -38,7 +56,7 @@ const HomeScreen = () => {
           description={negocio.description}
           onPress={() =>
             router.push({
-              pathname: "/negocio/[id]",
+              pathname: "/(stack)/negocio/[id]",
               params: { id: negocio.id },
             })
           }
@@ -49,3 +67,10 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

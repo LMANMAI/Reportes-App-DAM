@@ -36,13 +36,13 @@ const PerfilScreen = () => {
           style={{
             paddingHorizontal: 15,
             paddingVertical: 10,
-            //marginHorizontal: 5,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             borderColor: "#DADCE0",
             borderWidth: 1,
+            backgroundColor: "#FFF",
           }}
         >
           <Text>Cambiar foto de perfil</Text>
@@ -55,7 +55,7 @@ const PerfilScreen = () => {
           style={{
             paddingHorizontal: 15,
             paddingVertical: 10,
-            // marginHorizontal: 5,
+            backgroundColor: "#FFF",
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
             flexDirection: "row",

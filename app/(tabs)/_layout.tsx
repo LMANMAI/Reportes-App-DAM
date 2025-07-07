@@ -31,13 +31,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="negocio/[id]"
-        options={{
-          title: "Detalle del negocio",
-          tabBarStyle: { display: "none" },
-        }}
-      />
     </Tabs>
   );
 }
