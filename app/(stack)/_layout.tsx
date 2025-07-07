@@ -14,8 +14,14 @@ const _layout = () => {
         // component={HomeScreen}
         options={{ headerShadowVisible: false }}
       />
+      <Stack.Screen
+        name="negocio/[id]"
+        options={{
+          title: "Detalle del negocio",
+          headerBackVisible: true,
+        }}
+      />
     </Stack>
-    //<Stack />
   );
 };
 

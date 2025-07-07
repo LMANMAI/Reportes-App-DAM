@@ -17,8 +17,13 @@ import {
 WebBrowser.maybeCompleteAuthSession();
 
 const AuthScreen = () => {
-  const [text, onChangeText] = React.useState<string>("");
-  const [password, onChangePassword] = React.useState<string>("");
+  // Registro
+  const [registerEmail, setRegisterEmail] = React.useState<string>("");
+  const [registerPassword, setRegisterPassword] = React.useState<string>("");
+
+  // Login
+  const [loginEmail, setLoginEmail] = React.useState<string>("");
+  const [loginPassword, setLoginPassword] = React.useState<string>("");
 
   const { register, login } = useAuth();
   const slideAnim = React.useRef(new Animated.Value(0)).current;
@@ -26,11 +31,8 @@ const AuthScreen = () => {
 
   const handleSingUp = async () => {
     try {
-      console.log("result", register);
-      const result = await register(text, password);
-
+      const result = await register(registerEmail, registerPassword);
       if (result?.user) {
-        console.log("Usuario registrado:", result.user.email);
         router.replace("/(tabs)/home");
       }
     } catch (error) {
@@ -44,11 +46,8 @@ const AuthScreen = () => {
 
   const handleSingIn = async () => {
     try {
-      console.log("result", register);
-      const result = await login(text, password);
-
+      const result = await login(loginEmail, loginPassword);
       if (result?.user) {
-        console.log("Usuario registrado:", result.user.email);
         router.replace("/(tabs)/home");
       }
     } catch (error) {
@@ -75,22 +74,35 @@ const AuthScreen = () => {
         {
           transform: [{ translateY: slideAnim }],
         },
+        ,
+        { paddingTop: 175, paddingHorizontal: 10 },
       ]}
     >
+      <Text style={{ marginVertical: 10, fontWeight: "bold", fontSize: 24 }}>
+        Registrarse
+      </Text>
       <View style={styles.container}>
-        <View>
+        <View
+          style={{
+            padding: 10,
+            borderColor: "#DADCE0",
+            borderWidth: 1,
+            // margin: 10,
+            borderRadius: 10,
+          }}
+        >
           <TextInput
             placeholder="Email"
             style={styles.input}
-            onChangeText={onChangeText}
-            value={text}
+            onChangeText={setRegisterEmail}
+            value={registerEmail}
           />
           <TextInput
             placeholder="Contraseña"
             secureTextEntry
             style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
+            onChangeText={setRegisterPassword}
+            value={registerPassword}
           />
           <Pressable
             onPress={() => {
@@ -101,74 +113,55 @@ const AuthScreen = () => {
           >
             <Text style={styles.buttonText}>Registrar</Text>
           </Pressable>
-        </View>
 
-        <View
-          style={{
-            justifyContent: "flex-end",
-            borderColor: "red",
-            borderWidth: 1,
-            position: "fixed",
-            bottom: 0,
-            width: "100%",
-          }}
-        >
-          <Text>tenes cuenta?</Text>
-          <Pressable
-            onPress={() => {
-              //setRegisterPage(false);
-              toggleView(false);
-            }}
-          >
-            <Text> Iniciar sesion</Text>
-          </Pressable>
+          <View style={{ marginVertical: 10, flexDirection: "row", gap: 5 }}>
+            <Text>¿Ya tenés cuenta?</Text>
+            <Pressable
+              onPress={() => {
+                toggleView(false);
+              }}
+            >
+              <Text style={{ color: "#1A73E8" }}>Inicia sesion</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 
+      <Text style={{ marginVertical: 10, fontWeight: "bold", fontSize: 24 }}>
+        Iniciar sesión
+      </Text>
       <View style={styles.container}>
-        <View>
+        <View
+          style={{
+            padding: 10,
+            borderColor: "#DADCE0",
+            borderWidth: 1,
+            borderRadius: 10,
+          }}
+        >
           <TextInput
             placeholder="Email"
             style={styles.input}
-            onChangeText={onChangeText}
-            value={text}
+            onChangeText={setLoginEmail}
+            value={loginEmail}
           />
           <TextInput
             placeholder="Contraseña"
             secureTextEntry
             style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
+            onChangeText={setLoginPassword}
+            value={loginPassword}
           />
-          <Pressable
-            onPress={() => {
-              handleSingIn();
-            }}
-            style={styles.button}
-          >
+          <Pressable onPress={handleSingIn} style={styles.button}>
             <Text style={styles.buttonText}>Entrar</Text>
           </Pressable>
-        </View>
 
-        <View
-          style={{
-            justifyContent: "flex-end",
-            borderColor: "red",
-            borderWidth: 1,
-            position: "absolute",
-            top: 0,
-            width: "100%",
-          }}
-        >
-          <Text>Registrarse</Text>
-          <Pressable
-            onPress={() => {
-              // setRegisterPage(true);
-              toggleView(true);
-            }}
-          >
-            <Text>Registrar</Text>
-          </Pressable>
+          <View style={{ marginVertical: 10, flexDirection: "row", gap: 5 }}>
+            <Text>¿No tenés cuenta?</Text>
+            <Pressable onPress={() => toggleView(true)}>
+              <Text style={{ color: "#1A73E8" }}>Registrate</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Animated.View>
@@ -181,18 +174,20 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "space-between",
     height: "100%",
-    paddingTop: 175,
+    //paddingTop: 175,
   },
   input: {
     height: 40,
-    margin: 12,
+    marginVertical: 12,
     borderWidth: 1,
-    padding: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderColor: "#DADCE0",
   },
   button: {
-    marginHorizontal: 10,
     padding: 15,
-    backgroundColor: "red",
+    backgroundColor: "#1A73E8",
     borderRadius: 10,
     marginTop: 10,
   },

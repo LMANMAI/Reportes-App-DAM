@@ -1,5 +1,5 @@
 // firebaseConfig.ts
-import { getApp, getApps, initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -13,15 +13,7 @@ const firebaseConfig = {
   measurementId: "G-7QXFD87L3S",
 };
 
-//inicializar la app de firebase si no existe
-let app;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApp();
-}
-
 export const provider = new GoogleAuthProvider();
-//const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
