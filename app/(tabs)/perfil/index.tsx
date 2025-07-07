@@ -1,11 +1,27 @@
 import ChangeImg from "@/components/ChangeImg";
 import { useAuth } from "@/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 
 const PerfilScreen = () => {
   const { logout } = useAuth();
+  const [profileImage, setProfileImage] = useState('https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg');
+
+  const takePhoto = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={{ paddingHorizontal: 10 }}>
       <View
@@ -14,7 +30,7 @@ const PerfilScreen = () => {
           paddingVertical: 10,
         }}
       >
-        <View>
+        <Pressable onPress={takePhoto}>
           <Image
             style={{
               width: 100,
@@ -23,37 +39,15 @@ const PerfilScreen = () => {
               borderColor: "#DADCE0",
               borderWidth: 1,
             }}
-            source={{
-              uri: "https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg",
-            }}
+            source={{ uri: profileImage }}
           />
-        </View>
+        </Pressable>
         <Text>Perfil</Text>
       </View>
 
       <View>
-        <ChangeImg />
         <Pressable
-          onPress={() => {}}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 10,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderColor: "#DADCE0",
-            borderWidth: 1,
-            backgroundColor: "#FFF",
-          }}
-        >
-          <Text>Cambiar foto de perfil</Text>
-          <FontAwesome size={18} name="chevron-right" color={"#1A73E8"} />
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            logout();
-          }}
+          onPress={logout}
           style={{
             paddingHorizontal: 15,
             paddingVertical: 10,
