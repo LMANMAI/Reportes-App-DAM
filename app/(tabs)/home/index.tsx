@@ -40,7 +40,7 @@ const HomeScreen = () => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <Text>Obteniendo negocios.</Text>
+        <Text>Obteniendo negocios</Text>
         <ActivityIndicator size="large" />
       </View>
     );
