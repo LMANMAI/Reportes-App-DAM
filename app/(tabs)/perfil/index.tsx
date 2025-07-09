@@ -1,31 +1,94 @@
 import { useAuth } from "@/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import axios from "axios";
+import * as ImagePicker from "expo-image-picker";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, Pressable, Text, View } from "react-native";
+import { db } from "../../../config/config";
 
 const PerfilScreen = () => {
   const { logout } = useAuth();
-  const [profileImage, setProfileImage] = useState('https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg');
+  const [profileImage, setProfileImage] = useState(
+    "https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg"
+  );
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permiso requerido",
+          "Se necesita acceso a la cámara para usar esta función."
+        );
+      }
+    })();
+  }, []);
+
+  const guardarEnFirestore = async (imageUrl: string) => {
+    try {
+      await addDoc(collection(db, "imagenes"), {
+        url: imageUrl,
+        fecha: new Date(),
+      });
+      console.log("Imagen guardada en Firestore!");
+    } catch (error) {
+      console.error("Error al guardar en Firestore", error);
+    }
+  };
+  const uploadToCloudinary = async (imageUri: any) => {
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+
+    const data = new FormData();
+    data.append("file", blob);
+    data.append("upload_preset", "react_native_upload");
+    data.append("cloud_name", "Tdr0zsc99c");
+    try {
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dr0zsc99c/image/upload",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return res.data.secure_url;
+    } catch (err) {
+      console.error("Error subiendo a Cloudinary", err);
+      throw err;
+    }
+  };
 
   const takePhoto = async () => {
-    //Se usa ImagePicker pero lanzando directo la cámara, para no tener que elegir de la galería.
+    const permission = await ImagePicker.getCameraPermissionsAsync();
+    if (!permission.granted) {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permiso denegado", "No se puede acceder a la cámara.");
+        return;
+      }
+    }
+
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      //Recorte desactivado, a elección.
       allowsEditing: false,
       aspect: [1, 1],
       quality: 1,
     });
 
     if (!result.canceled) {
-      //Si el usuario no canceló el proceso, agarramos el URI generado y lo seteamos como pfp.
       setProfileImage(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      const imageUrl = await uploadToCloudinary(uri);
+      await guardarEnFirestore(imageUrl);
+      alert("Foto actualizada con éxito!");
     }
   };
 
   return (
-    //Convertir la imagen de perfil en un pressable.
     <View style={{ paddingHorizontal: 10 }}>
       <View
         style={{
@@ -33,7 +96,7 @@ const PerfilScreen = () => {
           paddingVertical: 10,
         }}
       >
-        <Pressable onLongPress={takePhoto}>
+        <Pressable onPress={takePhoto}>
           <Image
             style={{
               width: 100,
@@ -42,8 +105,6 @@ const PerfilScreen = () => {
               borderColor: "#DADCE0",
               borderWidth: 1,
             }}
-
-            //Tomamos el uri, ya sea el default (la url del veectezy) o el que seteó el usuario.
             source={{ uri: profileImage }}
           />
         </Pressable>
