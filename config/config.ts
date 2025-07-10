@@ -4,13 +4,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAQ-NvV45bSXupz1b6OxkHjhg9eUCLEslA",
-  authDomain: "rn-dam.firebaseapp.com",
-  projectId: "rn-dam",
-  storageBucket: "rn-dam.firebasestorage.app",
-  messagingSenderId: "916334995863",
-  appId: "1:916334995863:web:5843a14f4b9568e579fcd2",
-  measurementId: "G-7QXFD87L3S",
+  apiKey: "AIzaSyB-A7pDHgjEBe0y1MrbKUooC0tGgeFBezc",
+  authDomain: "localesitu-db894.firebaseapp.com",
+  projectId: "localesitu-db894",
+  storageBucket: "localesitu-db894.firebasestorage.app",
+  messagingSenderId: "886052887666",
+  appId: "1:886052887666:web:1f7d6a91ec364f9b16b6eb",
+  measurementId: "G-B30KQN433P",
 };
 
 export const provider = new GoogleAuthProvider();
