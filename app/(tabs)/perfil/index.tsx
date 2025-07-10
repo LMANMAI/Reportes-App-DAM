@@ -2,15 +2,17 @@ import { useAuth } from "@/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
+import { updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Alert, Image, Pressable, Text, View } from "react-native";
-import { db } from "../../../config/config";
-
+import { auth, db } from "../../../config/config";
 const PerfilScreen = () => {
   const { logout } = useAuth();
+  const { user } = useAuth();
   const [profileImage, setProfileImage] = useState(
-    "https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg"
+    user?.photoURL ??
+      "https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg"
   );
 
   useEffect(() => {
@@ -24,7 +26,6 @@ const PerfilScreen = () => {
       }
     })();
   }, []);
-
   const guardarEnFirestore = async (imageUrl: string) => {
     try {
       await addDoc(collection(db, "imagenes"), {
@@ -36,14 +37,17 @@ const PerfilScreen = () => {
       console.error("Error al guardar en Firestore", error);
     }
   };
-  const uploadToCloudinary = async (imageUri: any) => {
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
 
+  const uploadToCloudinary = async (imageUri: string) => {
     const data = new FormData();
-    data.append("file", blob);
+
+    data.append("file", {
+      uri: imageUri,
+      type: "image/jpeg",
+      name: "foto.jpg",
+    } as any);
     data.append("upload_preset", "react_native_upload");
-    data.append("cloud_name", "Tdr0zsc99c");
+
     try {
       const res = await axios.post(
         "https://api.cloudinary.com/v1_1/dr0zsc99c/image/upload",
@@ -55,13 +59,19 @@ const PerfilScreen = () => {
         }
       );
 
+      console.log("✅ URL subida:", res.data.secure_url);
       return res.data.secure_url;
-    } catch (err) {
-      console.error("Error subiendo a Cloudinary", err);
+    } catch (err: any) {
+      if (err.response) {
+        console.error("🔴 Cloudinary Error response:", err.response.data);
+      } else if (err.request) {
+        console.error("🟡 Sin respuesta del servidor:", err.request);
+      } else {
+        console.error("⚠️ Axios error:", err.message);
+      }
       throw err;
     }
   };
-
   const takePhoto = async () => {
     const permission = await ImagePicker.getCameraPermissionsAsync();
     if (!permission.granted) {
@@ -80,11 +90,19 @@ const PerfilScreen = () => {
     });
 
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
       const uri = result.assets[0].uri;
-      const imageUrl = await uploadToCloudinary(uri);
-      await guardarEnFirestore(imageUrl);
-      alert("Foto actualizada con éxito!");
+
+      try {
+        const imageUrl = await uploadToCloudinary(uri);
+        await updateProfile(auth.currentUser!, { photoURL: imageUrl });
+        await guardarEnFirestore(imageUrl);
+        setProfileImage(imageUrl);
+
+        alert("Foto actualizada con éxito!");
+      } catch (error) {
+        console.error("❌ Error al actualizar la imagen:", error);
+        Alert.alert("Error", "No se pudo actualizar la imagen.");
+      }
     }
   };
 

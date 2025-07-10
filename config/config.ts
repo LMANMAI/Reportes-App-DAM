@@ -1,16 +1,26 @@
 // firebaseConfig.ts
+import Constants from "expo-constants";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+const {
+  firebaseApiKey,
+  firebaseAuthDomain,
+  firebaseProjectId,
+  firebaseStorageBucket,
+  firebaseMessagingSenderId,
+  firebaseAppId,
+  firebaseMeasurementId,
+} = Constants.expoConfig!.extra!;
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAQ-NvV45bSXupz1b6OxkHjhg9eUCLEslA",
-  authDomain: "rn-dam.firebaseapp.com",
-  projectId: "rn-dam",
-  storageBucket: "rn-dam.firebasestorage.app",
-  messagingSenderId: "916334995863",
-  appId: "1:916334995863:web:5843a14f4b9568e579fcd2",
-  measurementId: "G-7QXFD87L3S",
+  apiKey: firebaseApiKey,
+  authDomain: firebaseAuthDomain,
+  projectId: firebaseProjectId,
+  storageBucket: firebaseStorageBucket,
+  messagingSenderId: firebaseMessagingSenderId,
+  appId: firebaseAppId,
+  measurementId: firebaseMeasurementId,
 };
 
 export const provider = new GoogleAuthProvider();
